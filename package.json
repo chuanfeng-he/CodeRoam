@@ -1,0 +1,18 @@
+{
+  "name": "coderoam",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CodeRoam Android remote controller and Linux bridge for Codex app-server.",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test",
+    "relay": "node relay/src/server.js",
+    "host": "node linux-bridge/bin/codex-remote.js host start",
+    "quickstart": "bash scripts/quickstart.sh"
+  },
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {}
+}

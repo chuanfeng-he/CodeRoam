@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CodeRoam Pairing Login Preview</title>
+  <style>
+    :root {
+      --page: #deded9;
+      --app: #fbfbf7;
+      --surface: #ffffff;
+      --surface-soft: #f2f2ed;
+      --ink: #20211e;
+      --muted: #6f7169;
+      --faint: #a4a69c;
+      --border: #deded6;
+      --border-strong: #c7c8bc;
+      --dark: #181a1f;
+      --dark-2: #24272f;
+      --mint: #7ce0c3;
+      --green: #27a95f;
+      --green-soft: #e5f4e9;
+      --amber-soft: #fff6e7;
+      --amber: #9a5b13;
+      --shadow: 0 24px 70px rgba(20, 22, 18, 0.22);
+      color-scheme: light;
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--page);
+      color: var(--ink);
+    }
+
+    .page {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 32px 22px 44px;
+    }
+
+    .brief {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 26px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 4vw, 38px);
+      font-weight: 730;
+      letter-spacing: 0;
+    }
+
+    .brief p {
+      max-width: 720px;
+      margin: 0;
+      color: #5f6159;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .legend span {
+      border: 1px solid rgba(32, 33, 30, 0.12);
+      background: rgba(255, 255, 255, 0.46);
+      border-radius: 999px;
+      padding: 8px 11px;
+      color: #4d4f49;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(330px, 1fr));
+      gap: 28px;
+      align-items: start;
+    }
+
+    .shot {
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+    }
+
+    .shot-title {
+      width: min(430px, 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #4f514b;
+      font-size: 14px;
+      gap: 12px;
+    }
+
+    .shot-title strong {
+      color: #252621;
+      font-size: 16px;
+    }
+
+    .phone {
+      position: relative;
+      width: min(430px, 100%);
+      aspect-ratio: 430 / 932;
+      background: #111;
+      border-radius: 34px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 78% 13%, rgba(124, 224, 195, 0.16), transparent 24%),
+        linear-gradient(180deg, #fbfbf7 0%, #f7f7f1 100%);
+    }
+
+    .statusbar {
+      height: 42px;
+      padding: 13px 26px 0;
+      display: flex;
+      justify-content: space-between;
+      color: #343631;
+      font-size: 13px;
+      font-weight: 680;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #4f514b;
+      font-size: 12px;
+    }
+
+    .battery {
+      min-width: 28px;
+      height: 15px;
+      border: 1.7px solid currentColor;
+      border-radius: 5px;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
+    }
+
+    .battery::before {
+      content: "";
+      width: 70%;
+      height: 100%;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      right: -4px;
+      width: 2px;
+      height: 7px;
+      border-radius: 1px;
+      background: currentColor;
+    }
+
+    .content {
+      position: absolute;
+      inset: 42px 0 0;
+      padding: 18px 24px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--dark);
+      display: grid;
+      place-items: center;
+      color: var(--mint);
+      font-weight: 760;
+      font-size: 17px;
+      box-shadow: 0 8px 20px rgba(24, 26, 31, 0.16);
+    }
+
+    .brand-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .brand-copy h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.1;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .brand-copy p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .secure-pill {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.72);
+      color: #4f514a;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .hero {
+      margin-top: 10px;
+    }
+
+    .hero h3 {
+      margin: 0;
+      max-width: 340px;
+      font-size: 36px;
+      line-height: 1.16;
+      font-weight: 730;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 330px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .primary-card {
+      position: relative;
+      margin-top: 4px;
+      border-radius: 10px;
+      background: var(--dark);
+      color: #fff;
+      overflow: hidden;
+      box-shadow: 0 16px 38px rgba(24, 26, 31, 0.18);
+    }
+
+    .primary-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -30px -48px auto;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      border: 26px solid rgba(124, 224, 195, 0.1);
+    }
+
+    .primary-inner {
+      position: relative;
+      z-index: 1;
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .qr-window {
+      width: 126px;
+      height: 126px;
+      border-radius: 12px;
+      background: #f8faf7;
+      padding: 10px;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.14) inset;
+    }
+
+    .qr-grid {
+      width: 100%;
+      height: 100%;
+      border-radius: 7px;
+      background:
+        linear-gradient(90deg, var(--dark) 10px, transparent 10px) 0 0 / 24px 24px,
+        linear-gradient(var(--dark) 10px, transparent 10px) 0 0 / 24px 24px,
+        #f8faf7;
+      opacity: 0.88;
+      position: relative;
+    }
+
+    .qr-grid::before,
+    .qr-grid::after {
+      content: "";
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border: 7px solid var(--dark);
+      border-radius: 5px;
+      background: #f8faf7;
+    }
+
+    .qr-grid::before {
+      left: 2px;
+      top: 2px;
+    }
+
+    .qr-grid::after {
+      right: 2px;
+      bottom: 2px;
+    }
+
+    .primary-top {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .primary-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .primary-copy strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 7px;
+    }
+
+    .primary-copy span {
+      display: block;
+      color: #d3d9d4;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .primary-button,
+    .secondary-button {
+      height: 48px;
+      border: 0;
+      border-radius: 8px;
+      font: inherit;
+      font-weight: 680;
+    }
+
+    .primary-button {
+      background: #f4f7f2;
+      color: #20211e;
+    }
+
+    .secondary-button {
+      background: rgba(255, 255, 255, 0.72);
+      color: #4e5049;
+      border: 1px solid var(--border);
+    }
+
+    .backup {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.66);
+      border-radius: 10px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .backup-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .backup-head strong {
+      font-size: 15px;
+    }
+
+    .backup-head span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .chevron {
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg) translateY(-2px);
+      flex: 0 0 auto;
+    }
+
+    .json-box {
+      min-height: 156px;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      background: #fcfcf8;
+      color: #9b9d93;
+      padding: 13px;
+      font-size: 13px;
+      line-height: 1.6;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .backup-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .hint {
+      border: 1px solid #ead6b4;
+      background: var(--amber-soft);
+      border-radius: 8px;
+      color: var(--amber);
+      padding: 11px 12px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .status-card {
+      margin-top: auto;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.58);
+      border-radius: 10px;
+      min-height: 58px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(39, 169, 95, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .status-copy {
+      min-width: 0;
+      flex: 1;
+      display: grid;
+      gap: 3px;
+    }
+
+    .status-copy strong,
+    .status-copy span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-copy strong {
+      font-size: 14px;
+    }
+
+    .status-copy span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .home-indicator {
+      position: absolute;
+      left: 50%;
+      bottom: 6px;
+      width: 136px;
+      height: 5px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #33352f;
+      opacity: 0.24;
+    }
+
+    .compact .hero h3 {
+      font-size: 31px;
+    }
+
+    .compact .primary-card {
+      margin-top: 0;
+    }
+
+    .compact .primary-inner {
+      padding: 14px;
+      gap: 12px;
+    }
+
+    .compact .qr-window {
+      width: 76px;
+      height: 76px;
+      border-radius: 9px;
+      padding: 7px;
+    }
+
+    .compact .primary-copy strong {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .compact .primary-copy span {
+      font-size: 12px;
+    }
+
+    .notes {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .note {
+      border: 1px solid rgba(32, 33, 30, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.42);
+      padding: 14px;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .note p {
+      margin: 0;
+      color: #64665e;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .brief {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .legend {
+        justify-content: flex-start;
+      }
+
+      .stage {
+        grid-template-columns: 1fr;
+      }
+
+      .notes {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page {
+        padding: 18px 12px 30px;
+      }
+
+      .phone {
+        padding: 7px;
+      }
+
+      .content {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .hero h3 {
+        font-size: 31px;
+      }
+
+      .primary-top {
+        align-items: flex-start;
+      }
+
+      .notes {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="brief">
+      <div>
+        <h1>CodeRoam 登录/配对页视觉预览</h1>
+        <p>
+          这版把“登录”理解为本地安全配对：扫码是主路径，粘贴 Pairing JSON 是备用路径。
+          视觉上和新版主界面保持同一套浅色、低噪声、移动端优先的语言。
+        </p>
+      </div>
+      <div class="legend" aria-label="design focus">
+        <span>扫码优先</span>
+        <span>备用入口收敛</span>
+        <span>连接状态清晰</span>
+        <span>更少卡片堆叠</span>
+      </div>
+    </section>
+
+    <section class="stage" aria-label="login mockups">
+      <article class="shot">
+        <div class="shot-title">
+          <strong>默认配对页</strong>
+          <span>主路径聚焦扫码</span>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar">
+              <span>10:19</span>
+              <span class="status-icons">5G <span class="battery"></span></span>
+            </div>
+            <div class="content">
+              <header class="brand-row">
+                <div class="mark">C&gt;</div>
+                <div class="brand-copy">
+                  <h2>CodeRoam</h2>
+                  <p>连接桌面 Codex</p>
+                </div>
+                <span class="secure-pill">端到端加密</span>
+              </header>
+
+              <section class="hero">
+                <h3>把手机连接到你的 Codex 工作区</h3>
+                <p>在 Linux 端启动 bridge 后，扫描二维码即可恢复项目、会话和工具状态。</p>
+              </section>
+
+              <section class="primary-card">
+                <div class="primary-inner">
+                  <div class="primary-top">
+                    <div class="qr-window" aria-hidden="true">
+                      <div class="qr-grid"></div>
+                    </div>
+                    <div class="primary-copy">
+                      <strong>扫码配对</strong>
+                      <span>打开相机，将 Linux bridge 生成的二维码放在画面中央。</span>
+                    </div>
+                  </div>
+                  <button class="primary-button">打开相机扫描二维码</button>
+                </div>
+              </section>
+
+              <section class="backup">
+                <div class="backup-head">
+                  <div>
+                    <strong>备用方式</strong><br>
+                    <span>二维码不可用时粘贴 Pairing JSON</span>
+                  </div>
+                  <span class="chevron" aria-hidden="true"></span>
+                </div>
+              </section>
+
+              <section class="status-card">
+                <span class="pulse"></span>
+                <div class="status-copy">
+                  <strong>等待配对</strong>
+                  <span>手机和 Linux bridge 需要访问同一个 relay</span>
+                </div>
+              </section>
+            </div>
+            <div class="home-indicator" aria-hidden="true"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="shot">
+        <div class="shot-title">
+          <strong>备用输入状态</strong>
+          <span>Pairing JSON 展开后仍保持轻量</span>
+        </div>
+        <div class="phone">
+          <div class="screen compact">
+            <div class="statusbar">
+              <span>10:19</span>
+              <span class="status-icons">5G <span class="battery"></span></span>
+            </div>
+            <div class="content">
+              <header class="brand-row">
+                <div class="mark">C&gt;</div>
+                <div class="brand-copy">
+                  <h2>CodeRoam</h2>
+                  <p>安全配对</p>
+                </div>
+                <span class="secure-pill">本地优先</span>
+              </header>
+
+              <section class="hero">
+                <h3>使用配对信息连接桌面端</h3>
+                <p>适合二维码无法扫描、远程桌面转发或相机权限不可用的情况。</p>
+              </section>
+
+              <section class="primary-card">
+                <div class="primary-inner">
+                  <div class="primary-top">
+                    <div class="qr-window" aria-hidden="true">
+                      <div class="qr-grid"></div>
+                    </div>
+                    <div class="primary-copy">
+                      <strong>仍可扫码</strong>
+                      <span>如果二维码恢复可用，扫码依然是最快路径。</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="backup">
+                <div class="backup-head">
+                  <div>
+                    <strong>Pairing JSON</strong><br>
+                    <span>粘贴 Linux bridge 输出的完整内容</span>
+                  </div>
+                  <span class="chevron" style="transform: rotate(225deg) translateY(-2px);" aria-hidden="true"></span>
+                </div>
+                <div class="json-box">
+{
+  "relay": "wss://relay.example",
+  "device": "linux-codex",
+  "key": "paste pairing json here"
+}
+                </div>
+                <div class="backup-actions">
+                  <button class="secondary-button">使用粘贴内容连接</button>
+                </div>
+              </section>
+
+              <div class="hint">
+                相机权限被拒绝时，可以在系统设置中允许相机，或直接使用 Pairing JSON。
+              </div>
+
+              <section class="status-card">
+                <span class="pulse"></span>
+                <div class="status-copy">
+                  <strong>已识别配对内容</strong>
+                  <span>确认后将建立端到端加密连接</span>
+                </div>
+              </section>
+            </div>
+            <div class="home-indicator" aria-hidden="true"></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="notes" aria-label="design notes">
+      <div class="note">
+        <strong>首屏目标</strong>
+        <p>用户一眼看到品牌、用途和主操作，不再被多个说明卡片分散注意力。</p>
+      </div>
+      <div class="note">
+        <strong>扫码路径</strong>
+        <p>深色主卡片承载扫码动作，和浅色背景形成明确焦点。</p>
+      </div>
+      <div class="note">
+        <strong>备用路径</strong>
+        <p>Pairing JSON 默认收起，展开后输入区、按钮、权限提示形成一个连续流程。</p>
+      </div>
+      <div class="note">
+        <strong>状态表达</strong>
+        <p>底部状态卡片固定展示等待、识别、连接失败等状态，不挤占主操作区。</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
